@@ -75,7 +75,15 @@
   <ItemGroup>
     <ClInclude Include="Visual Micro\.emt.vsarduino.h" />
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="bitmap.c" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
+  <ProjectExtensions>
+    <VisualStudio>
+      <UserProperties arduino.upload.port="COM8" />
+    </VisualStudio>
+  </ProjectExtensions>
 </Project>

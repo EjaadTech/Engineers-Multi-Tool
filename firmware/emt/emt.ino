@@ -35,7 +35,7 @@ Adafruit_PCD8544 display = Adafruit_PCD8544(6, 5, 4, 2, 3);
 extern uint8_t voltmeter[];
 extern uint8_t WaveOut[];
 extern uint8_t SemiTester[];
-
+extern uint8_t SerialOut[];
 
 
 
@@ -54,9 +54,16 @@ void setup()
 
 void loop()
 {
+	
 	VoltageBitMapDown();
 	WaveOutDown();
 	SemiTestDown();
+	SerialDown();
+	SerialUp();
+	SemiTestUp();
+	WaveOutUp();
+	VoltageBitMapUp();
+	
 	/*display.clearDisplay();
 	display.drawBitmap(0, 0, WaveOut, 84, 48, 1);
 	display.display();
@@ -91,9 +98,60 @@ void loop()
 	}
 	*/
 }
+
+
+void SerialUp()
+{
+	for (int a = 48; a >= -48; a = a - 4)
+	{
+
+		display.drawBitmap(0, a, SerialOut, 84, 48, 1);
+		display.display();
+		delay(40);
+		if (a == 0)
+			delay(1000);
+		display.clearDisplay();
+
+	}
+}
+
+void SerialDown()
+{
+	
+
+
+	for (int a = -48; a <= 48; a = a + 4)
+	{
+
+		display.drawBitmap(0, a, SerialOut, 84, 48, 1);
+		display.display();
+		delay(40);
+		if (a == 0)
+			delay(1000);
+		display.clearDisplay();
+
+	}
+}
+
+
 void VoltageBitMapDown()
 {
 	for (int a = -48; a <= 48; a = a + 4)
+	{
+
+		display.drawBitmap(0, a, voltmeter, 84, 48, 1);
+		display.display();
+		delay(40);
+		if (a == 0)
+			delay(1000);
+		display.clearDisplay();
+
+	}
+}
+
+void VoltageBitMapUp()
+{
+	for (int a = 48; a >= -48; a = a - 4)
 	{
 
 		display.drawBitmap(0, a, voltmeter, 84, 48, 1);
@@ -118,6 +176,23 @@ void WaveOutDown()
 			delay(1000);
 	}
 }
+
+
+void WaveOutUp()
+{
+	for (int a = 48; a >= -48; a = a - 4)
+	{
+
+		display.drawBitmap(0, a, WaveOut, 84, 48, 1);
+		display.display();
+		delay(40);
+		display.clearDisplay();
+		if (a == 0)
+			delay(1000);
+	}
+}
+
+
 void SemiTestDown()
 {
 	for (int a = -48; a <= 48; a = a + 4)
@@ -132,6 +207,19 @@ void SemiTestDown()
 	}
 }
 
+void SemiTestUp()
+{
+	for (int a = 48; a >=-48; a = a - 4)
+	{
+
+		display.drawBitmap(0, a, SemiTester, 84, 48, 1);
+		display.display();
+		delay(40);
+		display.clearDisplay();
+		if (a == 0)
+			delay(1000);
+	}
+}
 
 void VoltageRead()
 {
