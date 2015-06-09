@@ -39,7 +39,7 @@ extern uint8_t SerialOut[];*/
 
 const uint8_t* menu[] = { (uint8_t*)voltmeter, (uint8_t*)WaveOut, (uint8_t*)SemiTester, (uint8_t*)SerialOut };
 
-
+int count = 0;
 
 
 
@@ -56,188 +56,52 @@ void setup()
 
 void loop()
 {
-	showmenu();
-/*	VoltageBitMapDown();
-	WaveOutDown();
-	SemiTestDown();
-	SerialDown();
-	SerialUp();
-	SemiTestUp();
-	WaveOutUp();
-	VoltageBitMapUp();
-	*/
-	/*display.clearDisplay();
-	display.drawBitmap(0, 0, WaveOut, 84, 48, 1);
-	display.display();
-	delay(1000);
-	display.clearDisplay();
-	display.drawBitmap(0, 0, SemiTester, 84, 48, 1);
-	display.display();
-	delay(1000);
-	display.clearDisplay();*
-
-
-
-	/*
-
 	ButtonRead = analogRead(A7);
-	delay(20);
+	if (ButtonRead > 100 && ButtonRead < 200)
+	{
+		Serial.println(count);
+		MenuUp();
+		count++;
+		if (count == 4)
+			count = 0;
+	}
+	else if (ButtonRead > 400 && ButtonRead < 500)
+	{
+		count--;
+		if (count < 0)
+			count = 3;
 
-	if (ButtonRead > 700)
-	{
-	delay(300);
-	while (ButtonRead<800 )
-	{
-	FrequencySet();
-	ButtonRead = analogRead(A7);
-	delay(50);
+		Serial.println(count);
+		MenuDown();
+		
 	}
-
-	}
-	else
-	{
-	VoltageRead();
-	}
-	*/
+	
+	
 }
 
-void showmenu()
+void MenuUp()
 {
-	static int count = 0;
-	for (int a = 48; a >= -48; a = a - 4)
-	{
-
-		display.drawBitmap(0, a, menu[count], 84, 48, 1);
-		display.display();
-		delay(40);
-		if (a == 0)
-			delay(1000);
+	for (int i = 0; i <=48; i += 4)
+	{ 
 		display.clearDisplay();
+		display.drawBitmap(0, i, menu[count==0 ? 3 : (count-1) ], 84, 48, 1);
+		display.drawBitmap(0, i-48, menu[count], 84, 48, 1);
+		display.display();
+
 
 	}
-	count++;
-	if (count >= 4)
-		count = 0;
-
-}
-void SerialUp()
-{
-	for (int a = 48; a >= -48; a = a - 4)
-	{
-
-		display.drawBitmap(0, a, SerialOut, 84, 48, 1);
-		display.display();
-		delay(40);
-		if (a == 0)
-			delay(1000);
-		display.clearDisplay();
-
-	}
+	
 }
 
-void SerialDown()
+void MenuDown()
 {
 	
-
-
-	for (int a = -48; a <= 48; a = a + 4)
+	for (int i = 48; i >= 0; i-=4)
 	{
-
-		display.drawBitmap(0, a, SerialOut, 84, 48, 1);
-		display.display();
-		delay(40);
-		if (a == 0)
-			delay(1000);
 		display.clearDisplay();
-
-	}
-}
-
-
-void VoltageBitMapDown()
-{
-	for (int a = -48; a <= 48; a = a + 4)
-	{
-
-		display.drawBitmap(0, a, voltmeter, 84, 48, 1);
+		display.drawBitmap(0, i, menu[count == 0 ? 3 : (count - 1)], 84, 48, 1);
+		display.drawBitmap(0, i - 48, menu[count], 84, 48, 1);
 		display.display();
-		delay(40);
-		if (a == 0)
-			delay(1000);
-		display.clearDisplay();
-
-	}
-}
-
-void VoltageBitMapUp()
-{
-	for (int a = 48; a >= -48; a = a - 4)
-	{
-
-		display.drawBitmap(0, a, voltmeter, 84, 48, 1);
-		display.display();
-		delay(40);
-		if (a == 0)
-			delay(1000);
-		display.clearDisplay();
-
-	}
-}
-void WaveOutDown()
-{
-	for (int a = -48; a <= 48; a = a + 4)
-	{
-
-		display.drawBitmap(0, a, WaveOut, 84, 48, 1);
-		display.display();
-		delay(40);
-		display.clearDisplay();
-		if (a == 0)
-			delay(1000);
-	}
-}
-
-
-void WaveOutUp()
-{
-	for (int a = 48; a >= -48; a = a - 4)
-	{
-
-		display.drawBitmap(0, a, WaveOut, 84, 48, 1);
-		display.display();
-		delay(40);
-		display.clearDisplay();
-		if (a == 0)
-			delay(1000);
-	}
-}
-
-
-void SemiTestDown()
-{
-	for (int a = -48; a <= 48; a = a + 4)
-	{
-
-		display.drawBitmap(0, a, SemiTester, 84, 48, 1);
-		display.display();
-		delay(40);
-		display.clearDisplay();
-		if (a == 0)
-			delay(1000);
-	}
-}
-
-void SemiTestUp()
-{
-	for (int a = 48; a >=-48; a = a - 4)
-	{
-
-		display.drawBitmap(0, a, SemiTester, 84, 48, 1);
-		display.display();
-		delay(40);
-		display.clearDisplay();
-		if (a == 0)
-			delay(1000);
 	}
 }
 
