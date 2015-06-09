@@ -73,6 +73,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="menu.h" />
     <ClInclude Include="Visual Micro\.emt.vsarduino.h" />
   </ItemGroup>
   <ItemGroup>

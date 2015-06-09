@@ -85,4 +85,5 @@ extern "C" void __cxa_pure_virtual() {;}
 #define portModeRegister(P)
 #include <emt.ino>
 #include <bitmap.c>
+#include <menu.h>
 #endif

@@ -16,7 +16,7 @@ float VoltageA, VoltageB;
 #include <SPI.h>
 #include <Adafruit_GFX.h>
 #include <Adafruit_PCD8544.h>
-
+#include "menu.h"
 
 // Software SPI (slower updates, more flexible pin options):
 // pin 7 - Serial clock out (SCLK)
@@ -31,11 +31,13 @@ Adafruit_PCD8544 display = Adafruit_PCD8544(6, 5, 4, 2, 3);
 /* Width:  84 */
 /* Height: 48 */
 /* Format: Generic Bitmap 1BPP */
-
-extern uint8_t voltmeter[];
+/*extern uint8_t voltmeter[];
 extern uint8_t WaveOut[];
 extern uint8_t SemiTester[];
-extern uint8_t SerialOut[];
+extern uint8_t SerialOut[];*/
+
+
+const uint8_t* menu[] = { (uint8_t*)voltmeter, (uint8_t*)WaveOut, (uint8_t*)SemiTester, (uint8_t*)SerialOut };
 
 
 
@@ -54,8 +56,8 @@ void setup()
 
 void loop()
 {
-	
-	VoltageBitMapDown();
+	showmenu();
+/*	VoltageBitMapDown();
 	WaveOutDown();
 	SemiTestDown();
 	SerialDown();
@@ -63,7 +65,7 @@ void loop()
 	SemiTestUp();
 	WaveOutUp();
 	VoltageBitMapUp();
-	
+	*/
 	/*display.clearDisplay();
 	display.drawBitmap(0, 0, WaveOut, 84, 48, 1);
 	display.display();
@@ -99,7 +101,25 @@ void loop()
 	*/
 }
 
+void showmenu()
+{
+	static int count = 0;
+	for (int a = 48; a >= -48; a = a - 4)
+	{
 
+		display.drawBitmap(0, a, menu[count], 84, 48, 1);
+		display.display();
+		delay(40);
+		if (a == 0)
+			delay(1000);
+		display.clearDisplay();
+
+	}
+	count++;
+	if (count >= 4)
+		count = 0;
+
+}
 void SerialUp()
 {
 	for (int a = 48; a >= -48; a = a - 4)
