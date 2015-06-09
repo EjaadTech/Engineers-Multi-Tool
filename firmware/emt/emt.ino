@@ -41,7 +41,7 @@ const uint8_t* menu[] = { (uint8_t*)voltmeter, (uint8_t*)WaveOut, (uint8_t*)Semi
 
 int count = 0;
 
-
+int menutest;
 
 
 void setup()
@@ -52,14 +52,40 @@ void setup()
 	display.begin();
 	display.setContrast(63);
 	display.clearDisplay();
+	display.drawBitmap(0, 0, menu[0], 84, 48, 1);
+	
+	display.display();
 }
 
 void loop()
 {
 	ButtonRead = analogRead(A7);
+	delay(20);
+	Menu();
+	if (count == 1 && ButtonRead > 700 && ButtonRead < 800)
+	{
+		VoltageRead();
+		display.clearDisplay();
+
+		display.drawBitmap(0, 0, menu[count-1], 84, 48, 1);
+		display.display();
+	}
+	else if (count == 2 && ButtonRead > 700 && ButtonRead < 800)
+	{
+		FrequencySet();
+		display.clearDisplay();
+		
+		display.drawBitmap(0, 0, menu[count-1], 84, 48, 1);
+		display.display();
+	
+	}
+	
+}
+
+void Menu()
+{
 	if (ButtonRead > 100 && ButtonRead < 200)
 	{
-		Serial.println(count);
 		MenuUp();
 		count++;
 		if (count == 4)
@@ -70,13 +96,10 @@ void loop()
 		count--;
 		if (count < 0)
 			count = 3;
-
-		Serial.println(count);
 		MenuDown();
-		
+
 	}
-	
-	
+
 }
 
 void MenuUp()
@@ -107,28 +130,38 @@ void MenuDown()
 
 void VoltageRead()
 {
-	display.setTextSize(3);
-	display.clearDisplay();
-	VoltageA = analogRead(A2)*5.0 / 1023.0;
-	VoltageA = VoltageA * 11;
-	VoltageB = analogRead(A3)*5.0 / 1023.0;
-	VoltageB = VoltageB * 11;
-	if (VoltageA > 0)
-	{
-		VoltageA += 0.5;
-	}
-	if (VoltageB > 0)
-	{
-		VoltageB += 0.5;
-	}
-	if (VoltageA >= 10)
-		display.print(VoltageA, 1);
-	else
-		display.print(VoltageA);
-	display.println(VoltageB);
-	display.display();
 	delay(50);
-
+	display.setTextSize(3);
+	while (ButtonRead < 800)
+	{
+		ButtonRead = analogRead(A7);
+		
+		VoltageA = analogRead(A2)*5.0 / 1023.0;
+		VoltageA = VoltageA * 11;
+		VoltageB = analogRead(A3)*5.0 / 1023.0;
+		VoltageB = VoltageB * 11;
+		display.clearDisplay();
+		if (VoltageA > 0)
+		{
+			VoltageA += 0.5;
+		}
+		if (VoltageB > 0)
+		{
+			VoltageB += 0.5;
+		}
+		if (VoltageA >= 10)
+			display.print(VoltageA, 1);
+		else
+			display.print(VoltageA);
+		display.println(VoltageB);
+		display.display();
+		display.setRotation(2);
+		display.fillRoundRect(1, -2, 4, map(VoltageB,0,56,0,48), 1, 1);
+		display.fillRoundRect(7, -2, 4, map(VoltageA, 0, 56, 0, 48), 1, 1);
+		display.setRotation(0);
+		display.display();
+		delay(70);
+	}
 }
 void calculation()
 {
@@ -203,58 +236,60 @@ void regsetting()
 }
 void FrequencySet()
 {
-	display.clearDisplay();
-	display.setTextSize(1);
-	display.setTextColor(BLACK);
-	display.setCursor(0, 0);
-	ButtonRead = analogRead(A7);
-
-	if (ButtonRead > 700 && ButtonRead <800)
+	while (ButtonRead < 800)
 	{
+		display.clearDisplay();
+		display.setTextSize(1);
+		display.setTextColor(BLACK);
+		display.setCursor(0, 0);
 		ButtonRead = analogRead(A7);
-		delay(400);
-		while (ButtonRead < 800)
+
+		if (ButtonRead > 700 && ButtonRead < 800)
 		{
+			ButtonRead = analogRead(A7);
+			delay(400);
+			while (ButtonRead < 800)
+			{
 
-			SetFreq();
-			if (ButtonRead > 700 && ButtonRead <800)
-			{
-				delay(400);
-				break;
-			}
-			if (ButtonRead>400 && ButtonRead < 500)
-			{
-				while (ButtonRead < 800)
+				SetFreq();
+				if (ButtonRead > 700 && ButtonRead <800)
 				{
-					SetDuty();
-					if ((ButtonRead>100 && ButtonRead < 200) || (ButtonRead > 700 && ButtonRead < 800))
-						break;
-
+					delay(400);
+					break;
 				}
+				if (ButtonRead>400 && ButtonRead < 500)
+				{
+					while (ButtonRead < 800)
+					{
+						SetDuty();
+						if ((ButtonRead>100 && ButtonRead < 200) || (ButtonRead > 700 && ButtonRead < 800))
+							break;
+
+					}
+				}
+
+
 			}
+
 
 
 		}
+		else
+		{
 
-
+			display.print("FREQ ");
+			display.println(Frequency[FinalReg]);
+			display.print("DUTY ");
+			display.print(duty);
+			display.println("%");
+			DutyBar = map(duty, 0, 100, 0, 83);
+			display.drawLine(DutyBar - 1, 47, 83, 47, BLACK);
+			display.fillRect(-1, 31, DutyBar - 2, 18, BLACK);
+			display.drawRect(-1, 29, DutyBar, 20, BLACK);
+			display.display();
+		}
 
 	}
-	else
-	{
-
-		display.print("FREQ ");
-		display.println(Frequency[FinalReg]);
-		display.print("DUTY ");
-		display.print(duty);
-		display.println("%");
-		DutyBar = map(duty, 0, 100, 0, 83);
-		display.drawLine(DutyBar - 1, 47, 83, 47, BLACK);
-		display.fillRect(-1, 31, DutyBar - 2, 18, BLACK);
-		display.drawRect(-1, 29, DutyBar, 20, BLACK);
-		display.display();
-	}
-
-
 }
 
 void SetFreq()
@@ -266,7 +301,7 @@ void SetFreq()
 	ButtonRead = analogRead(A7);
 	display.clearDisplay();
 	display.println("  FREQ");
-	display.print(Frequency[FinalReg]);
+	display.print(Frequency[FinalReg],0);
 
 
 	display.display();
@@ -293,13 +328,13 @@ void SetFreq()
 		{
 			InputFrequency += 100;
 		}
-		else if (InputFrequency <= 10000)
+		else 
 		{
 			InputFrequency += 1000;
 		}
 
 		calculation();
-		delay(20);
+		delay(50);
 	}
 }
 void SetDuty()
