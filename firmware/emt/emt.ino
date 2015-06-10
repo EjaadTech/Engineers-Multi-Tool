@@ -11,6 +11,7 @@ float duty = 5;
 unsigned long time[2], ButtonTimer, PreTimer;
 unsigned int ButtonRead, DutyBar;
 float VoltageA, VoltageB;
+const long BaudRate[10] = {1200,2400,4800,9600,14400,19200,28800,38400,57600,115200};
 
 
 #include <SPI.h>
@@ -39,15 +40,18 @@ extern uint8_t SerialOut[];*/
 
 const uint8_t* menu[] = { (uint8_t*)voltmeter, (uint8_t*)WaveOut, (uint8_t*)SemiTester, (uint8_t*)SerialOut };
 
-int count = 0;
-
+int count = 1;
+byte BaudCount = 3;
 int menutest;
-
+String ReadSerial;
 
 void setup()
 {
-	Serial.begin(115200);
-	pinMode(9, OUTPUT);
+	Serial.begin(BaudRate[3]);
+	for (int i = 7; i <= 13; i++)
+	{
+		pinMode(i, OUTPUT);
+	}
 	calculation();
 	display.begin();
 	display.setContrast(63);
@@ -62,26 +66,68 @@ void loop()
 	ButtonRead = analogRead(A7);
 	delay(20);
 	Menu();
-	if (count == 1 && ButtonRead > 700 && ButtonRead < 800)
-	{
-		VoltageRead();
-		display.clearDisplay();
-
-		display.drawBitmap(0, 0, menu[count-1], 84, 48, 1);
-		display.display();
-	}
-	else if (count == 2 && ButtonRead > 700 && ButtonRead < 800)
-	{
-		FrequencySet();
-		display.clearDisplay();
-		
-		display.drawBitmap(0, 0, menu[count-1], 84, 48, 1);
-		display.display();
-	
-	}
 	
 }
 
+
+void SerialDisplay()
+{
+	while (ButtonRead < 800)
+	{
+		delay(200);
+		display.clearDisplay();
+		ButtonRead = analogRead(A7);
+		//display.setCursor(0, 0);
+		display.print("Baud Rate\n");
+		display.print(BaudRate[BaudCount]);
+		display.display();
+		
+		if (ButtonRead>400 && ButtonRead < 500)
+		{
+			BaudCount++;
+			if (BaudCount >= 10)
+				BaudCount = 0;
+			delay(200);
+			Serial.begin(BaudRate[BaudCount]);
+		}
+
+		else if (ButtonRead>100 && ButtonRead < 200)
+		{
+			BaudCount--;
+			if (BaudCount >10)
+				BaudCount = 9;
+			delay(200);
+			Serial.begin(BaudRate[BaudCount]);
+		}
+		
+		if (ButtonRead > 700 && ButtonRead < 800)
+		{
+			display.clearDisplay();
+			display.print("Serial Begin");
+			display.display();
+			delay(1000);
+			display.clearDisplay();
+			display.display();
+			while (ButtonRead < 800)
+			{
+				if (Serial.available())
+				{
+					
+					ReadSerial = Serial.readString();
+					display.println(ReadSerial);
+					
+						display.display();
+					
+				}
+				ButtonRead = analogRead(A7);
+				
+			}
+			
+		}
+
+	}
+
+}
 void Menu()
 {
 	if (ButtonRead > 100 && ButtonRead < 200)
@@ -100,6 +146,33 @@ void Menu()
 
 	}
 
+
+
+	if (count == 1 && ButtonRead > 700 && ButtonRead < 800)
+	{
+		VoltageRead();
+		display.clearDisplay();
+
+		display.drawBitmap(0, 0, menu[count - 1], 84, 48, 1);
+		display.display();
+	}
+	else if (count == 2 && ButtonRead > 700 && ButtonRead < 800)
+	{
+		FrequencySet();
+		display.clearDisplay();
+
+		display.drawBitmap(0, 0, menu[count - 1], 84, 48, 1);
+		display.display();
+
+	}
+	else if (count == 0 && ButtonRead > 700 && ButtonRead < 800)
+	{
+		SerialDisplay();
+		display.clearDisplay();
+
+		display.drawBitmap(0, 0, menu[count - 1], 84, 48, 1);
+		display.display();
+	}
 }
 
 void MenuUp()
@@ -308,13 +381,24 @@ void SetFreq()
 
 	if (ButtonRead > 500 && ButtonRead < 600)
 	{
-		if (InputFrequency >= 0)
+		if (InputFrequency <300 && InputFrequency>=0)
 		{
-			InputFrequency -= 100;
+			InputFrequency --;
 
-			calculation();
-			delay(20);
+			
 		}
+		else if (InputFrequency<1000)
+		{
+			InputFrequency-=100;
+
+		}
+		else
+		{
+			InputFrequency -= 1000;
+		}
+
+		calculation();
+		delay(20);
 
 	}
 	else if (ButtonRead > 200 && ButtonRead < 300)
