@@ -43,7 +43,13 @@ const uint8_t* menu[] = { (uint8_t*)voltmeter, (uint8_t*)WaveOut, (uint8_t*)Semi
 int count = 1;
 byte BaudCount = 3;
 int menutest;
-String ReadSerial;
+String ReadSerial = "";
+String AppendedText="";
+int SerialScreen = 0;
+boolean stringComplete = false;  // whether the string is complete
+unsigned char lineCount = 0, charCount = 0;
+
+
 
 void setup()
 {
@@ -72,12 +78,14 @@ void loop()
 
 void SerialDisplay()
 {
+	byte testloop=0;
+	display.setTextSize(1);
 	while (ButtonRead < 800)
 	{
 		delay(200);
 		display.clearDisplay();
 		ButtonRead = analogRead(A7);
-		//display.setCursor(0, 0);
+		
 		display.print("Baud Rate\n");
 		display.print(BaudRate[BaudCount]);
 		display.display();
@@ -90,7 +98,6 @@ void SerialDisplay()
 			delay(200);
 			Serial.begin(BaudRate[BaudCount]);
 		}
-
 		else if (ButtonRead>100 && ButtonRead < 200)
 		{
 			BaudCount--;
@@ -108,26 +115,63 @@ void SerialDisplay()
 			delay(1000);
 			display.clearDisplay();
 			display.display();
-			while (ButtonRead < 800)
+			ReadSerial = "";
+			lineCount = 0;
+			charCount = 0;
+			while (ButtonRead <800 )
 			{
-				if (Serial.available())
-				{
-					
-					ReadSerial = Serial.readString();
-					display.println(ReadSerial);
-					
-						display.display();
-					
-				}
 				ButtonRead = analogRead(A7);
+				if (ButtonRead > 700 && ButtonRead < 800)
+					break;
+				while (Serial.available()) {
+					char inChar = (char)Serial.read();
+					ReadSerial += inChar;
+					if (inChar == '\n'){
+						lineCount++;
+						charCount = 0;
+					}
+					else
+						charCount++;
+					if (charCount >= 12){
+						ReadSerial += '\n';
+						lineCount++;
+						charCount = 0;
+					}
+					if (lineCount > 6){
+						unsigned char firstLine = ReadSerial.indexOf('\n');
+						
+
+						for (int a = 0; a < ReadSerial.length() - 1 - firstLine; a++){
+							ReadSerial[a] = ReadSerial[a + firstLine + 1];
+						}
+					
+						for (int a = ReadSerial.length() - 1 - firstLine; a < ReadSerial.length() - 1; a++){
+							ReadSerial.remove(a);
+						}
+						
+						lineCount--;
+					}
+					testloop = 1;
+				}
+				if (testloop == 1)
+				{
+
+					display.clearDisplay();
+					display.print(ReadSerial);
+					display.display();
+					testloop = 0;
+				}
 				
-			}
+				
+				
+				}
+				
+			ButtonRead = analogRead(A7);
 			
 		}
-
+		}
 	}
 
-}
 void Menu()
 {
 	if (ButtonRead > 100 && ButtonRead < 200)
@@ -170,7 +214,8 @@ void Menu()
 		SerialDisplay();
 		display.clearDisplay();
 
-		display.drawBitmap(0, 0, menu[count - 1], 84, 48, 1);
+		display.drawBitmap(0, 0, menu[3], 84, 48, 1);
+		//Serial.println((count - 1));
 		display.display();
 	}
 }
@@ -454,3 +499,4 @@ void SetDuty()
 		delay(100);
 	}
 }
+
