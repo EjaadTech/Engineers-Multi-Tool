@@ -452,7 +452,7 @@ const long BaudRate[10] = {1200,2400,4800,9600,14400,19200,28800,38400,57600,115
 #include <SPI.h>
 #include <Adafruit_GFX.h>
 #include <Adafruit_PCD8544.h>
-#include "menu.h"
+//#include "menu.h"
 
 // Software SPI (slower updates, more flexible pin options):
 // pin 7 - Serial clock out (SCLK)
@@ -465,8 +465,8 @@ Adafruit_PCD8544 display = Adafruit_PCD8544(6, 5, 4, 2, 3);
 
 
 
-const uint8_t* menu[] = { (uint8_t*)voltmeter, (uint8_t*)WaveOut, (uint8_t*)SemiTester, (uint8_t*)SerialOut };
-
+//const uint8_t* menu[] = { (uint8_t*)voltmeter, (uint8_t*)WaveOut, (uint8_t*)SemiTester, (uint8_t*)SerialOut };
+String menu[] = { "voltmeter", "WaveOut", "SemiTester", "SerialOut " };
 int count = 1;
 byte BaudCount = 3;
 int menutest;
@@ -489,8 +489,8 @@ void setup()
 	display.begin();
 	display.setContrast(63);
 	display.clearDisplay();
-	display.drawBitmap(0, 0, menu[0], 84, 48, 1);
-	
+	//display.drawBitmap(0, 0, menu[0], 84, 48, 1);
+	display.print(menu[0]);
 	display.display();
 	semisetup();
 }
@@ -624,7 +624,8 @@ void Menu()
 		VoltageRead();
 		display.clearDisplay();
 
-		display.drawBitmap(0, 0, menu[count - 1], 84, 48, 1);
+		//display.drawBitmap(0, 0, menu[count - 1], 84, 48, 1);
+		display.print(menu[count - 1]);
 		display.display();
 	}
 	else if (count == 2 && ButtonRead > 700 && ButtonRead < 800)
@@ -632,7 +633,8 @@ void Menu()
 		FrequencySet();
 		display.clearDisplay();
 
-		display.drawBitmap(0, 0, menu[count - 1], 84, 48, 1);
+		//display.drawBitmap(0, 0, menu[count - 1], 84, 48, 1);
+		display.print(menu[count - 1]);
 		display.display();
 
 	}
@@ -641,7 +643,8 @@ void Menu()
 		SerialDisplay();
 		display.clearDisplay();
 
-		display.drawBitmap(0, 0, menu[3], 84, 48, 1);
+		//display.drawBitmap(0, 0, menu[3], 84, 48, 1);
+		display.print(menu[3]);
 		//Serial.println((count - 1));
 		display.display();
 	}
@@ -650,7 +653,8 @@ void Menu()
 		SemiProbing();
 		display.clearDisplay();
 
-		display.drawBitmap(0, 0, menu[3], 84, 48, 1);
+//display.drawBitmap(0, 0, menu[3], 84, 48, 1);
+		display.print(menu[count - 1]);
 		//Serial.println((count - 1));
 		display.display();
 	}
@@ -661,8 +665,9 @@ void MenuUp()
 	for (int i = 0; i <=48; i += 4)
 	{ 
 		display.clearDisplay();
-		display.drawBitmap(0, i, menu[count==0 ? 3 : (count-1) ], 84, 48, 1);
-		display.drawBitmap(0, i-48, menu[count], 84, 48, 1);
+		//display.drawBitmap(0, i, menu[count==0 ? 3 : (count-1) ], 84, 48, 1);
+		//display.drawBitmap(0, i-48, menu[count], 84, 48, 1);
+		display.print(menu[count]);
 		display.display();
 
 
@@ -676,8 +681,9 @@ void MenuDown()
 	for (int i = 48; i >= 0; i-=4)
 	{
 		display.clearDisplay();
-		display.drawBitmap(0, i, menu[count == 0 ? 3 : (count - 1)], 84, 48, 1);
-		display.drawBitmap(0, i - 48, menu[count], 84, 48, 1);
+		//display.drawBitmap(0, i, menu[count == 0 ? 3 : (count - 1)], 84, 48, 1);
+		//display.drawBitmap(0, i - 48, menu[count], 84, 48, 1);
+		display.print(menu[count]);
 		display.display();
 	}
 }
