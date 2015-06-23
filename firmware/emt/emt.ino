@@ -318,9 +318,9 @@ class __FlashStringHelper;
 #define X(str) (strcpy_P(PRGBuffer, PSTR(str)), PRGBuffer)
 
 //Strings
-const unsigned char Mode_str[] PROGMEM = "Mode:";
-const unsigned char Continous_str[] PROGMEM = "Continous";
-const unsigned char AutoHold_str[] PROGMEM = "Auto Hold";
+//const unsigned char Mode_str[] PROGMEM = "Mode:";
+//const unsigned char Continous_str[] PROGMEM = "Continous";
+//const unsigned char AutoHold_str[] PROGMEM = "Auto Hold";
 const unsigned char Running_str[] PROGMEM = "Probing...";
 const unsigned char Weak_str[] PROGMEM = "weak";
 const unsigned char Low_str[] PROGMEM = "low";
@@ -346,8 +346,8 @@ const unsigned char OK_str[] PROGMEM = "ok";
 const unsigned char MOS_str[] PROGMEM = "MOS";
 const unsigned char FET_str[] PROGMEM = "FET";
 const unsigned char Channel_str[] PROGMEM = "-ch";
-const unsigned char Enhancement_str[] PROGMEM = "enh.";
-const unsigned char Depletion_str[] PROGMEM = "dep.";
+const unsigned char Enhancement_str[] PROGMEM = "Enh.";
+const unsigned char Depletion_str[] PROGMEM = "Dep.";
 const unsigned char IGBT_str[] PROGMEM = "IGBT";
 const unsigned char GateCap_str[] PROGMEM = "Cgs=";
 const unsigned char GDS_str[] PROGMEM = "GDS=";
@@ -355,7 +355,7 @@ const unsigned char GCE_str[] PROGMEM = "GCE=";
 const unsigned char NPN_str[] PROGMEM = "NPN";
 const unsigned char PNP_str[] PROGMEM = "PNP";
 const unsigned char EBC_str[] PROGMEM = "EBC=";
-const unsigned char hFE_str[] PROGMEM = "h_FE=";
+const unsigned char hFE_str[] PROGMEM = "hFE=";
 const unsigned char V_BE_str[] PROGMEM = "V_BE=";
 const unsigned char I_CEO_str[] PROGMEM = "I_CEO=";
 const unsigned char Vf_str[] PROGMEM = "Vf=";
@@ -407,8 +407,7 @@ byte FlagIcon[8] = { 0x1f, 0x11, 0x0e, 0x04, 0x0a, 0x15, 0x1f, 0x00 };
 //Prefix Table
 const unsigned char Prefix_table[] = { 'p', 'n', LCD_CHAR_MICRO, 'm', 0, 'k', 'M' };
 //PWM menu: frequencies
-const unsigned int PWM_Freq_table[] = { 100, 250, 500, 1000, 2500, 5000, 10000, 25000 };
-//Voltage based factors for large caps (using Rl)
+
 const unsigned int LargeCap_table[] = { 23022, 21195, 19629, 18272, 17084, 16036, 15104, 14271, 13520, 12841, 12224, 11660, 11143, 10668, 10229, 9822, 9445, 9093, 8765, 8458, 8170, 7900, 7645, 7405, 7178, 6963, 6760, 6567, 6384, 6209, 6043, 5885, 5733, 5589, 5450, 5318, 5191, 5069, 4952, 4839, 4731, 4627, 4526, 4430, 4336 };
 //Voltage based factors for small caps (using Rh)
 const unsigned int SmallCap_table[] = { 954, 903, 856, 814, 775, 740, 707, 676, 648 };
@@ -443,7 +442,7 @@ unsigned int  FinalReg;
 long Test = 8000000;
 unsigned long temp[5];
 float duty = 5;
-unsigned long time[2], ButtonTimer, PreTimer;
+//unsigned long time[2], ButtonTimer, PreTimer;
 unsigned int ButtonRead, DutyBar;
 float VoltageA, VoltageB;
 const long BaudRate[10] = {1200,2400,4800,9600,14400,19200,28800,38400,57600,115200};
@@ -480,6 +479,7 @@ unsigned char lineCount = 0, charCount = 0;
 
 void setup()
 {
+	
 	Serial.begin(BaudRate[3]);
 	for (int i = 7; i <= 13; i++)
 	{
@@ -642,7 +642,7 @@ void Menu()
 		display.clearDisplay();
 
 		display.drawBitmap(0, 0, menu[3], 84, 48, 1);
-		//Serial.println((count - 1));
+		
 		display.display();
 	}
 	else if (count == 3 && ButtonRead > 700 && ButtonRead < 800)
@@ -651,7 +651,7 @@ void Menu()
 		display.clearDisplay();
 
 		display.drawBitmap(0, 0, menu[3], 84, 48, 1);
-		//Serial.println((count - 1));
+		
 		display.display();
 	}
 }
@@ -4792,112 +4792,7 @@ void ShowAdjust(void)
 #endif
 }
 
-//PWM tool
-void PWM_Tool(unsigned int Frequency)
-{
-	//Use probe #2 (PB2, OC1B) as PWM output and probe #1 + probe #3 as ground - Freqency in Hz
-	byte                        Test = 1;          //Loop control and user feedback 
-	byte                        Ratio;             //PWM ratio 
-	byte                        Prescaler;         //Timer prescaler 
-	unsigned int                Top;               //Top value 
-	unsigned int                Toggle;            //Counter value to toggle output
-	uint32_t                    Value;             //Temporary value
-	/*
-	fast PWM:             f = f_MCU / (prescaler * depth)
-	phase correct PWM:    f = f_MCU / (2 * prescaler * depth)
-	available prescalers: 1, 8, 64, 256, 1024
-	depth:                2^x (x is the bit depth)
-	*/
-	ShortCircuit(0);                               //Make sure probes are not shorted
-	lcd_clear();
-	lcd_fixed_string(PWM_str);                     //Display: PWM
-	lcd_data(' ');
-	DisplayValue(Frequency, 0, 'H');               //Display frequency
-	lcd_data('z');                                 //Make it Hz :-) 
-	R_PORT = 0;                                    //Make probe #1 and #3 ground
-	//Set all probes to output mode
-	R_DDR = (1 << (TP1 * 2)) | (1 << (TP2 * 2)) | (1 << (TP3 * 2));
-	//Calculate required prescaler and top value based on MCU clock, depth = f_MCU / (2 * prescaler * f_PWM)
-	Value = CPU_FREQ / 2;
-	Value /= Frequency;
-	if (Value > 2000000)                           //Low frequency
-	{
-		Value /= 256;
-		Prescaler = (1 << CS12);                     //256
-	}
-	else if (Value > 16000)                        //Mid-range frequency
-	{
-		Value /= 64;
-		Prescaler = (1 << CS11) | (1 << CS10);       //64  
-	}
-	else                                           //High frequency
-	{
-		Prescaler = (1 << CS10);                     //1
-	}
-	Top = (unsigned int)Value;
-	//Setup timer1 for PWM - PWM, phase correct, top value by OCR1A
-	Ratio = 50;                                    //Default ratio is 50%
-	Toggle = (Top / 2) - 1;                        //Compare value for 50%
-	//Power save mode would disable timer1 
-	Config.SleepMode = SLEEP_MODE_IDLE;            //Change sleep mode to Idle
-	TCCR1B = 0;                                    //Disable timer
-	//Enable OC1B pin and set timer mode
-	TCCR1A = (1 << WGM11) | (1 << WGM10) | (1 << COM1B1);
-	TCCR1B = (1 << WGM13);
-	TCNT1 = 0;                                     //Set counter to 0
-	OCR1A = Top - 1;                               //Set top value (-1)
-	OCR1B = Toggle;                                //Set value to compare with
-	//Enable counter by setting clock prescaler
-	TCCR1B = (1 << WGM13) | Prescaler;
-	//Ratio control
-	while (Test > 0)
-	{
-		//Show current ratio
-		lcd_clear_line(2);
-		DisplayValue(Ratio, 0, '%');                 //Show ratio in %
-		delay(500);                                  //Smooth UI
-		//Short key press -> increase ratio, long key press -> decrease ratio, two short key presses -> exit PWM
-#ifdef BUTTON_INST
-		Test = TestKey(0, 0);                      //Wait for user feedback 
-#else
-		delay(3000);
-		Test = 1;
-#endif
-		if (Test == 1)                               //Short key press
-		{
-			delay(50);                                 //Debounce button a little bit longer
-#ifdef BUTTON_INST
-			Prescaler = TestKey(200, 0);             //Check for second key press
-#else
-			delay(3000);
-			Prescaler = 0;
-#endif
-			if (Prescaler > 0)                         //Second key press
-			{
-				Test = 0;                                //End loop
-			}
-			else                                       //Single key press 
-			{
-				if (Ratio <= 95) Ratio += 5;             // +5% and limit to 100% 
-			}
-		}
-		else                                         //Long key press
-		{
-			if (Ratio >= 5) Ratio -= 5;                // -5% and limit to 0%
-		}
-		//Calculate toggle value: (depth * (ratio / 100)) - 1 
-		Value = (uint32_t)Top * Ratio;
-		Value /= 100;
-		Toggle = (unsigned int)Value;
-		Toggle--;
-		OCR1B = Toggle;                              //Update compare value
-	}
-	//Clean up
-	TCCR1B = 0;                                    //Disable timer
-	TCCR1A = 0;                                    //Reset flags (also frees PB2)
-	R_DDR = 0;                                     //Set HiZ mode
-	Config.SleepMode = SLEEP_MODE_PWR_SAVE;        //Reset sleep mode to default
-}
+
 
 //EEPROM FUNCTIONS
 //Update values stored in EEPROM
@@ -4966,15 +4861,3 @@ void DefaultPar(void)
 	//Save to EEProm
 	SaveEEP();
 }
-
-
-
-
-
-
-
-
-
-
-
-
