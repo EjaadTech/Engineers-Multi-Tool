@@ -1,0 +1,57 @@
+[Eagle]
+Version="07 02 00"
+Platform="Windows"
+Serial="62191E841E-LSR-WLM-1EL"
+Globals="Globals"
+Desktop="Desktop"
+
+[Globals]
+AutoSaveProject=1
+UsedLibrary="C:/Users/Jailbeaker/Documents/eagle/library/GeekAmmo.lbr"
+UsedLibrary="C:/Users/Jailbeaker/Documents/eagle/library/LilyPad-Wearables.lbr"
+UsedLibrary="C:/Users/Jailbeaker/Documents/eagle/library/Seeed-OPL-Antenna.lbr"
+UsedLibrary="C:/Users/Jailbeaker/Documents/eagle/library/Seeed-OPL-Button.lbr"
+UsedLibrary="C:/Users/Jailbeaker/Documents/eagle/library/Seeed-OPL-Capacitor.lbr"
+UsedLibrary="C:/Users/Jailbeaker/Documents/eagle/library/Seeed-OPL-Connector.lbr"
+UsedLibrary="C:/Users/Jailbeaker/Documents/eagle/library/Seeed-OPL-Crystal-osctllator.lbr"
+UsedLibrary="C:/Users/Jailbeaker/Documents/eagle/library/Seeed-OPL-Diode.lbr"
+UsedLibrary="C:/Users/Jailbeaker/Documents/eagle/library/Seeed-OPL-Display.lbr"
+UsedLibrary="C:/Users/Jailbeaker/Documents/eagle/library/Seeed-OPL-Fuse.lbr"
+UsedLibrary="C:/Users/Jailbeaker/Documents/eagle/library/Seeed-OPL-IC.lbr"
+UsedLibrary="C:/Users/Jailbeaker/Documents/eagle/library/Seeed-OPL-Inductor.lbr"
+UsedLibrary="C:/Users/Jailbeaker/Documents/eagle/library/Seeed-OPL-Moudle.lbr"
+UsedLibrary="C:/Users/Jailbeaker/Documents/eagle/library/Seeed-OPL-Relay.lbr"
+UsedLibrary="C:/Users/Jailbeaker/Documents/eagle/library/Seeed-OPL-Resistor.lbr"
+UsedLibrary="C:/Users/Jailbeaker/Documents/eagle/library/Seeed-OPL-Switch.lbr"
+UsedLibrary="C:/Users/Jailbeaker/Documents/eagle/library/Seeed-OPL-Transistor.lbr"
+UsedLibrary="C:/Users/Jailbeaker/Documents/eagle/library/Seeed-OPL-sensor.lbr"
+UsedLibrary="C:/Users/Jailbeaker/Documents/eagle/library/SparkFun-Aesthetics.lbr"
+UsedLibrary="C:/Users/Jailbeaker/Documents/eagle/library/SparkFun-AnalogIC.lbr"
+UsedLibrary="C:/Users/Jailbeaker/Documents/eagle/library/SparkFun-Boards.lbr"
+UsedLibrary="C:/Users/Jailbeaker/Documents/eagle/library/SparkFun-Capacitors.lbr"
+UsedLibrary="C:/Users/Jailbeaker/Documents/eagle/library/SparkFun-Connectors.lbr"
+UsedLibrary="C:/Users/Jailbeaker/Documents/eagle/library/SparkFun-DigitalIC.lbr"
+UsedLibrary="C:/Users/Jailbeaker/Documents/eagle/library/SparkFun-DiscreteSemi.lbr"
+UsedLibrary="C:/Users/Jailbeaker/Documents/eagle/library/SparkFun-Displays.lbr"
+UsedLibrary="C:/Users/Jailbeaker/Documents/eagle/library/SparkFun-Electromechanical.lbr"
+UsedLibrary="C:/Users/Jailbeaker/Documents/eagle/library/SparkFun-FreqCtrl.lbr"
+UsedLibrary="C:/Users/Jailbeaker/Documents/eagle/library/SparkFun-LED.lbr"
+UsedLibrary="C:/Users/Jailbeaker/Documents/eagle/library/SparkFun-Passives.lbr"
+UsedLibrary="C:/Users/Jailbeaker/Documents/eagle/library/SparkFun-PowerIC.lbr"
+UsedLibrary="C:/Users/Jailbeaker/Documents/eagle/library/SparkFun-RF.lbr"
+UsedLibrary="C:/Users/Jailbeaker/Documents/eagle/library/SparkFun-Resistors.lbr"
+UsedLibrary="C:/Users/Jailbeaker/Documents/eagle/library/SparkFun-Retired.lbr"
+UsedLibrary="C:/Users/Jailbeaker/Documents/eagle/library/SparkFun-Sensors.lbr"
+UsedLibrary="C:/Users/Jailbeaker/Documents/eagle/library/User-Submitted.lbr"
+UsedLibrary="C:/Users/Jailbeaker/Documents/eagle/library/display.lbr"
+UsedLibrary="C:/Users/Jailbeaker/Documents/eagle/library/jet-lib.lbr"
+
+[Win_1]
+Type="Control Panel"
+Loc="375 165 974 564"
+State=3
+Number=0
+
+[Desktop]
+Screen="1366 768"
+Window="Win_1"
